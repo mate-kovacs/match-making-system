@@ -22,4 +22,9 @@ public class UserControllerTest {
         mockMvc.perform(get("/")).andExpect(status().is4xxClientError());
     }
 
+    @Test
+    public void requestForUserByIdResponseTypeIsJsonWithUTF8Charset() throws Exception {
+        mockMvc.perform(get("/user/1")).andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
 }
