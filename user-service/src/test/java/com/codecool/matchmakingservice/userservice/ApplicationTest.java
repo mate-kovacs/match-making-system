@@ -12,6 +12,6 @@ import static org.junit.Assert.*;
 public class ApplicationTest {
 
     @Test
-    public void contextLoads(){
+    public void checkSpringBootApplication(){
     }
 }
