@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,7 +25,7 @@ public class UserControllerTest {
 
     @Test
     public void requestForUserByIdResponseTypeIsJsonWithUTF8Charset() throws Exception {
-        mockMvc.perform(get("/user/1")).andExpect(content().contentType("application/json;charset=UTF-8"));
+        mockMvc.perform(get("/user/1")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
 }
