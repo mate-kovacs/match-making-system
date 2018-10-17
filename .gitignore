@@ -8,6 +8,9 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
+data-postgres.sql
+schema-postgres.sql
+
 .idea/
 *.iml
 
