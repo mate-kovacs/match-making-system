@@ -53,4 +53,9 @@ public class UserControllerTest {
         mockMvc.perform(get("/user/email").param("email", "invalid email address")).andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void requestForUserByValidEmailAddressResponseTypeIsJsonWithUTF8CharsetAndStatusIsOk() throws Exception {
+        mockMvc.perform((get("/user/email").param("email", "a@b.com"))).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
+
 }
