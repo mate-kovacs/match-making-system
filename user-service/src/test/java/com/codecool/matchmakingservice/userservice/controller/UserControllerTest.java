@@ -23,28 +23,28 @@ public class UserControllerTest {
 
     @Test
     public void wrongURLRespondsWithNotFound() throws Exception {
-        mockMvc.perform(get("/")).andExpect(status().is4xxClientError());
+        mockMvc.perform(get("/")).andExpect(status().isNotFound());
     }
 
     @Test
     public void requestForUserByIdResponseTypeIsJsonWithUTF8Charset() throws Exception {
-        mockMvc.perform(get("/user/1")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        mockMvc.perform(get("/user/id").param("id", "1")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
     public void requestForUserByIdResponseContainsId() throws Exception {
-        String response = mockMvc.perform(get("/user/1")).andReturn().getResponse().getContentAsString();
+        String response = mockMvc.perform(get("/user/id").param("id", "1")).andReturn().getResponse().getContentAsString();
         Assert.assertTrue(JsonPath.parse(response).read("$.id").equals(1));
     }
 
     @Test
     public void requestForUserByNameResponseTypeIsJsonWithUTF8Charset() throws Exception {
-        mockMvc.perform(get("/users").param("name", "Eugene")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        mockMvc.perform(get("/users/name").param("name", "Eugene")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
     public void requestForUsersByNameResponseContainsAnArrayOfUsers() throws Exception {
-        String response = mockMvc.perform(get("/users").param("name", "Eugene")).andReturn().getResponse().getContentAsString();
+        String response = mockMvc.perform(get("/users/name").param("name", "Eugene")).andReturn().getResponse().getContentAsString();
         Assert.assertNotNull(JsonPath.parse(response).read("$.users.length()"));
     }
 

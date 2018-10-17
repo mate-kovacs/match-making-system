@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class UserController {
 
-    @GetMapping(path = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getUserById(@PathVariable int id){
+    @GetMapping(path = "/user/id", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getUserById(@RequestParam("id") String id){
         String user = "{\"id\": 1}";
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/users/name", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getUserByName(@RequestParam("name") String name) {
         String userList = "{\"users\":[]}";
         return new ResponseEntity<>(userList, HttpStatus.OK);
