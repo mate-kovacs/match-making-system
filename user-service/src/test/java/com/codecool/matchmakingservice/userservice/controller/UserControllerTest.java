@@ -37,4 +37,9 @@ public class UserControllerTest {
         Assert.assertTrue(JsonPath.parse(response).read("$.id").equals(1));
     }
 
+    @Test
+    public void requestForUserByNameResponseTypeIsJsonWithUTF8Charset() throws Exception {
+        mockMvc.perform(get("/users").param("name", "Eugene")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
+
 }
