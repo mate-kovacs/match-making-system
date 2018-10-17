@@ -22,4 +22,9 @@ public class UserController {
         String userList = "{\"users\":[]}";
         return new ResponseEntity<>(userList, HttpStatus.OK);
     }
+
+    @GetMapping(path = "/user/email", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getUserByEmail(@RequestParam("email") String email) {
+        return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+    }
 }
