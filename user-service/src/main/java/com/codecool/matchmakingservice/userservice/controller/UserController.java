@@ -19,6 +19,7 @@ public class UserController {
 
     @GetMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getUserByName(@RequestParam("name") String name) {
-        return new ResponseEntity<>("", HttpStatus.OK);
+        String userList = "{\"users\":[]}";
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 }

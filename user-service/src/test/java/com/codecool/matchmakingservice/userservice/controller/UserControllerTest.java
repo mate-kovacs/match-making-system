@@ -42,4 +42,10 @@ public class UserControllerTest {
         mockMvc.perform(get("/users").param("name", "Eugene")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
+    @Test
+    public void requestForUsersByNameResponseContainsAnArrayOfUsers() throws Exception {
+        String response = mockMvc.perform(get("/users").param("name", "Eugene")).andReturn().getResponse().getContentAsString();
+        Assert.assertNotNull(JsonPath.parse(response).read("$.users.length()"));
+    }
+
 }
