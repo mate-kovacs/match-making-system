@@ -37,6 +37,9 @@ public class UserControllerTest {
         Assert.assertTrue(JsonPath.parse(response).read("$.id").equals(1));
     }
 
+    // todo test for id where user is in the mocked dataset - expect the given user object
+    // todo test for id where user is not in the mocked dataset - expect not found response
+
     @Test
     public void requestForUserByNameResponseTypeIsJsonWithUTF8Charset() throws Exception {
         mockMvc.perform(get("/users/name").param("name", "Eugene")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
@@ -48,14 +51,22 @@ public class UserControllerTest {
         Assert.assertNotNull(JsonPath.parse(response).read("$.users.length()"));
     }
 
+    // todo test for name where users are in the mocked dataset - expect the given users (possibly multiple asserts)
+    // todo test for name where users are not in the mocked dataset - expect empty list as response
+
+
     @Test
     public void requestForUserByInvalidEmailAddressRespondsWithBadRequest() throws Exception {
-        mockMvc.perform(get("/user/email").param("email", "invalid email address")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user/email").param("email", "info@gmail.commm")).andExpect(status().isBadRequest());
     }
 
     @Test
     public void requestForUserByValidEmailAddressResponseTypeIsJsonWithUTF8CharsetAndStatusIsOk() throws Exception {
-        mockMvc.perform((get("/user/email").param("email", "a@b.com"))).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        mockMvc.perform((get("/user/email").param("email", "info@gmail.com"))).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
+    // todo test for email where user is in the mocked dataset - expect the given user object
+    // todo test for email where user is not in the mocked dataset - expect not found response
+
+    // todo controller for getting users based on elo rating (range)
 }

@@ -13,7 +13,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 public class UserController {
 
     @GetMapping(path = "/user/id", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getUserById(@RequestParam("id") String id){
+    public ResponseEntity<String> getUserById(@RequestParam("id") String id) {
         String user = "{\"id\": 1}";
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -26,7 +26,7 @@ public class UserController {
 
     @GetMapping(path = "/user/email", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getUserByEmail(@RequestParam("email") String email) {
-        if (! EmailValidator.getInstance().isValid(email)){
+        if (!EmailValidator.getInstance().isValid(email)) {
             return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("", HttpStatus.OK);
