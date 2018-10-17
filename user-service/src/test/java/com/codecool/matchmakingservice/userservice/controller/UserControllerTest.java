@@ -1,5 +1,7 @@
 package com.codecool.matchmakingservice.userservice.controller;
 
+import com.jayway.jsonpath.JsonPath;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,6 +29,12 @@ public class UserControllerTest {
     @Test
     public void requestForUserByIdResponseTypeIsJsonWithUTF8Charset() throws Exception {
         mockMvc.perform(get("/user/1")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
+
+    @Test
+    public void requestForUserByIdResponseContainsId() throws Exception {
+        String response = mockMvc.perform(get("/user/1")).andReturn().getResponse().getContentAsString();
+        Assert.assertTrue(JsonPath.parse(response).read("$.id").equals(1));
     }
 
 }

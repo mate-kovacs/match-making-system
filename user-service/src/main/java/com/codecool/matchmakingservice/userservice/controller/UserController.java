@@ -12,6 +12,7 @@ public class UserController {
 
     @GetMapping(path = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getUserById(@PathVariable int id){
-        return new ResponseEntity<>("", HttpStatus.OK);
+        String user = "{\"id\": 1}";
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
