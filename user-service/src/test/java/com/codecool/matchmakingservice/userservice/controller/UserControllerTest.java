@@ -1,17 +1,27 @@
 package com.codecool.matchmakingservice.userservice.controller;
 
+import com.codecool.matchmakingservice.userservice.model.User;
+import com.codecool.matchmakingservice.userservice.repository.UserRepository;
 import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONArray;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.MultiValueMap;
 
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,6 +32,31 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private UserRepository repository;
+
+    @InjectMocks
+    private UserController controller;
+
+    private User adam;
+    private User cindy;
+
+    @Before
+    public void setup() {
+        adam = new User();
+        adam.setId(1L);
+        adam.setName("Adam");
+        adam.setEmail("adam@mms.com");
+        adam.setPassword("password1");
+        adam.setElo(100);
+        cindy = new User();
+        cindy.setId(3L);
+        cindy.setName("Cindy");
+        cindy.setEmail("cindy@mms.com");
+        cindy.setPassword("password3");
+        cindy.setElo(150);
+    }
 
     @Test
     public void wrongURLRespondsWithNotFound() throws Exception {
@@ -70,8 +105,6 @@ public class UserControllerTest {
     // todo test for email where user is in the mocked dataset - expect the given user object
     // todo test for email where user is not in the mocked dataset - expect not found response
 
-    // todo controller for getting users based on elo rating (range)
-
     @Test
     public void requestForUserByEloResponseTypeIsJsonWithUTF8Charset() throws Exception {
         MultiValueMap<String, String> params = new HttpHeaders();
@@ -117,5 +150,25 @@ public class UserControllerTest {
         params.set("min_elo", "0");
         params.set("max_elo", "-100");
         mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void requestForUserByEloBetween80And170ResponseIsAdamAndCindy() throws Exception {
+        List<User> mockedResultList = new LinkedList<>();
+        mockedResultList.add(adam);
+        mockedResultList.add(cindy);
+        Mockito.when(repository.findAllByEloBetweenOrderByIdAscEloAsc(80, 170)).thenReturn(mockedResultList);
+        String[] expected = {"Adam", "Cindy"};
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("min_elo", "80");
+        params.set("max_elo", "170");
+        String response = mockMvc.perform(get("/users/elo").params(params)).andReturn().getResponse().getContentAsString();
+        JSONArray resultList = JsonPath.parse(response).read("$[*].name");
+        String[] results = new String[resultList.size()];
+        for (int i = 0; i < resultList.size(); i ++) {
+            results[i] = resultList.get(i).toString();
+        }
+        Assert.assertArrayEquals(expected , results);
     }
 }

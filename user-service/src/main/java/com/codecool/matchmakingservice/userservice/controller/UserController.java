@@ -1,5 +1,8 @@
 package com.codecool.matchmakingservice.userservice.controller;
 
+import com.codecool.matchmakingservice.userservice.repository.UserRepository;
+import com.codecool.matchmakingservice.userservice.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class UserController {
+
+    @Autowired
+    UserRepository repository;
 
     @GetMapping(path = "/user/id", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getUserById(@RequestParam("id") String id) {
@@ -33,14 +42,17 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/elo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getUserByElo(@RequestParam("min_elo") String minElo,
+    public ResponseEntity<List<User>> getUserByElo(@RequestParam("min_elo") String minElo,
                                                @RequestParam("max_elo") String maxElo) {
+        int smallestElo;
+        int highestElo;
         try {
-            Integer.parseInt(minElo);
-            Integer.parseInt(maxElo);
+            smallestElo = Integer.parseInt(minElo);
+            highestElo = Integer.parseInt(maxElo);
         } catch (NumberFormatException ex) {
-            return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("", HttpStatus.OK);
+        List<User> users = repository.findAllByEloBetweenOrderByIdAscEloAsc(smallestElo, highestElo);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
