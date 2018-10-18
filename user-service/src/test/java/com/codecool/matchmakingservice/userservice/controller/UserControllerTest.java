@@ -70,12 +70,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void requestForUserByIdResponseContainsId() throws Exception {
-        String response = mockMvc.perform(get("/user/id").param("id", "1")).andReturn().getResponse().getContentAsString();
-        Assert.assertTrue(JsonPath.parse(response).read("$.id").equals(1));
-    }
-
-    @Test
     public void requestForUserByIdWhenInDatabaseRespondsWithUser() throws Exception {
         Optional<User> result = Optional.of(adam);
         Mockito.when(repository.findById(1L)).thenReturn(result);
