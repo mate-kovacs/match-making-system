@@ -35,6 +35,12 @@ public class UserController {
     @GetMapping(path = "/users/elo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getUserByElo(@RequestParam("min_elo") String minElo,
                                                @RequestParam("max_elo") String maxElo) {
+        try {
+            Integer.parseInt(minElo);
+            Integer.parseInt(maxElo);
+        } catch (NumberFormatException ex) {
+            return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 }
