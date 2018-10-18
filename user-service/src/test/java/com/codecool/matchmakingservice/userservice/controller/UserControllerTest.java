@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -72,6 +73,23 @@ public class UserControllerTest {
     public void requestForUserByIdResponseContainsId() throws Exception {
         String response = mockMvc.perform(get("/user/id").param("id", "1")).andReturn().getResponse().getContentAsString();
         Assert.assertTrue(JsonPath.parse(response).read("$.id").equals(1));
+    }
+
+    @Test
+    public void requestForUserByIdWhenInDatabaseRespondsWithUser() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        User resultUser = new User();
+
+        String response = mockMvc.perform(get("/user/id").param("id", "1")).andReturn().getResponse().getContentAsString();
+        resultUser.setId( Long.parseLong( JsonPath.parse(response).read("$.id").toString() ));
+        resultUser.setName(JsonPath.parse(response).read("$.name"));
+        resultUser.setEmail(JsonPath.parse(response).read("$.email"));
+        resultUser.setPassword(JsonPath.parse(response).read("$.password"));
+        resultUser.setElo(JsonPath.parse(response).read("$.elo"));
+
+        Assert.assertEquals(adam, resultUser);
     }
 
     // todo test for id where user is in the mocked dataset - expect the given user object

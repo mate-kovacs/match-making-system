@@ -14,6 +14,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -22,8 +23,15 @@ public class UserController {
     UserRepository repository;
 
     @GetMapping(path = "/user/id", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getUserById(@RequestParam("id") String id) {
-        String user = "{\"id\": 1}";
+    public ResponseEntity<User> getUserById(@RequestParam("id") String id) {
+        Long userId;
+        try {
+            userId = Long.parseLong(id);
+        } catch (NumberFormatException ex) {
+            return new ResponseEntity<>(new User(), HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> optionalUser = repository.findById(userId);
+        User user = optionalUser.isPresent() ? optionalUser.get() : new User();
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
