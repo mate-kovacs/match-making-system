@@ -94,4 +94,12 @@ public class UserControllerTest {
         params.set("max_elo", "zero");
         mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void requestForUserByEloNotIntegerParamsRespondsWithBadRequest() throws Exception {
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("min_elo", "0");
+        params.set("max_elo", "1.1");
+        mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isBadRequest());
+    }
 }
