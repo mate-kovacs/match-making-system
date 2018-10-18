@@ -30,7 +30,7 @@ public class UserController {
         } catch (NumberFormatException ex) {
             return new ResponseEntity<>(new User(), HttpStatus.BAD_REQUEST);
         }
-        if (userId < 0) {
+        if (userId <= 0) {
             return new ResponseEntity<>(new User(), HttpStatus.BAD_REQUEST);
         }
         Optional<User> optionalUser = repository.findById(userId);
