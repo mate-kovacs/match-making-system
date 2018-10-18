@@ -86,8 +86,12 @@ public class UserControllerTest {
         Assert.assertEquals(adam, resultUser);
     }
 
-    // todo test for id where user is in the mocked dataset - expect the given user object
-    // todo test for id where user is not in the mocked dataset - expect not found response
+    @Test
+    public void requestForUserByIdWhenUserNotInDatabaseRespondsWithNotFound() throws Exception {
+        Optional<User> result = Optional.empty();
+        Mockito.when(repository.findById(999L)).thenReturn(result);
+        mockMvc.perform(get("/user/id").param("id", "999")).andExpect(status().isNotFound());
+    }
 
     @Test
     public void requestForUserByNameResponseTypeIsJsonWithUTF8Charset() throws Exception {

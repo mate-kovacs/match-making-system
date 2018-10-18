@@ -31,8 +31,11 @@ public class UserController {
             return new ResponseEntity<>(new User(), HttpStatus.BAD_REQUEST);
         }
         Optional<User> optionalUser = repository.findById(userId);
-        User user = optionalUser.isPresent() ? optionalUser.get() : new User();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        if (optionalUser.isPresent()) {
+            return new ResponseEntity<>(optionalUser.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new User(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(path = "/users/name", produces = MediaType.APPLICATION_JSON_VALUE)
