@@ -65,6 +65,11 @@ public class UserControllerTest {
     }
 
     @Test
+    public void requestForUserByIdWithMissingParamRespondsBadRequest() throws Exception{
+        mockMvc.perform(get("/user/id")).andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void requestForUserByNotNumericIdRespondsBadRequest() throws Exception{
         mockMvc.perform(get("/user/id").param("id", "twentytwo")).andExpect(status().isBadRequest());
     }
