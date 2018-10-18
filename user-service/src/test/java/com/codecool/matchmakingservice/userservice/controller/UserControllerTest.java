@@ -65,6 +65,11 @@ public class UserControllerTest {
     }
 
     @Test
+    public void requestForUserByNotNumericIdRespondsBadRequest() throws Exception{
+        mockMvc.perform(get("/user/id").param("id", "twentytwo")).andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void requestForUserByNegativeIdRespondsBadRequest() throws Exception{
         mockMvc.perform(get("/user/id").param("id", "-15")).andExpect(status().isBadRequest());
     }
