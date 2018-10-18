@@ -79,4 +79,11 @@ public class UserControllerTest {
         params.set("max_elo", "0");
         mockMvc.perform(get("/users/elo").params(params)).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
+
+    @Test
+    public void requestForUserByEloMissingParamsRespondsWithBadRequest() throws Exception {
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("min_elo", "0");
+        mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isBadRequest());
+    }
 }
