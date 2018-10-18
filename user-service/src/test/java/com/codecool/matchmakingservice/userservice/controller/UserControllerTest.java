@@ -65,6 +65,11 @@ public class UserControllerTest {
     }
 
     @Test
+    public void requestForUserByNegativeIdRespondsBadRequest() throws Exception{
+        mockMvc.perform(get("/user/id").param("id", "-15")).andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void requestForUserByIdResponseTypeIsJsonWithUTF8Charset() throws Exception {
         mockMvc.perform(get("/user/id").param("id", "1")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
