@@ -6,9 +6,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.MultiValueMap;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -69,4 +71,12 @@ public class UserControllerTest {
     // todo test for email where user is not in the mocked dataset - expect not found response
 
     // todo controller for getting users based on elo rating (range)
+
+    @Test
+    public void requestForUserByEloResponseTypeIsJsonWithUTF8Charset() throws Exception {
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("min_elo", "0");
+        params.set("max_elo", "0");
+        mockMvc.perform(get("/users/elo").params(params)).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
 }

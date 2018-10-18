@@ -31,4 +31,10 @@ public class UserController {
         }
         return new ResponseEntity<>("", HttpStatus.OK);
     }
+
+    @GetMapping(path = "/users/elo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getUserByElo(@RequestParam("min_elo") String minElo,
+                                               @RequestParam("max_elo") String maxElo) {
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
 }
