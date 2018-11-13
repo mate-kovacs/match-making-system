@@ -188,6 +188,20 @@ public class UserControllerTest {
     }
 
     @Test
+    public void requestForUserByEmailWhenInDatabaseResponseIsOneElementArray() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findByEmail("adam@mms.com")).thenReturn(result);
+
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("email", "adam@mms.com");
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
+        int resultLength = Integer.parseInt( JsonPath.parse(response).read("$.length()").toString() );
+
+        Assert.assertEquals(1, resultLength);
+    }
+
+    @Test
     public void requestForUserByEmailWhenInDatabaseRespondsWithUser() throws Exception {
         Optional<User> result = Optional.of(adam);
         Mockito.when(repository.findByEmail("adam@mms.com")).thenReturn(result);
