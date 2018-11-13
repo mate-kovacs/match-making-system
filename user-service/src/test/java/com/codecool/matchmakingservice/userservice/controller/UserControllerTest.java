@@ -129,8 +129,24 @@ public class UserControllerTest {
         Assert.assertNotNull(JsonPath.parse(response).read("$.length()"));
     }
 
+    @Test
+    public void requestForUsersByNameWhenNotInDatabaseResponseIsEmptyList() throws Exception {
+        List<User> mockedResultList = new LinkedList<>();
+        Mockito.when(repository.findAllByNameOrderByIdAscNameAsc("Eugene")).thenReturn(mockedResultList);
+        String[] expected = {};
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("name", "Eugene");
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
+        JSONArray resultList = JsonPath.parse(response).read("$[*].name");
+        String[] results = new String[resultList.size()];
+        for (int i = 0; i < resultList.size(); i ++) {
+            results[i] = resultList.get(i).toString();
+        }
+        Assert.assertArrayEquals(expected , results);
+    }
+
     // todo test for name where users are in the mocked dataset - expect the given users (possibly multiple asserts)
-    // todo test for name where users are not in the mocked dataset - expect empty list as response
 
 
     @Test
