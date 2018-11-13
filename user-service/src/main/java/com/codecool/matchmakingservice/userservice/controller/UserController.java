@@ -80,8 +80,12 @@ public class UserController {
         if (!EmailValidator.getInstance().isValid(email)) {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
         } else {
-            List<User> userList = new ArrayList<>();
-            return new ResponseEntity<>(userList, HttpStatus.OK);
+            List<User> users = new ArrayList<>();
+            Optional<User> optionalUser = repository.findByEmail(email);
+            if (optionalUser.isPresent()) {
+                users.add(optionalUser.get());
+            }
+            return new ResponseEntity<>(users, HttpStatus.OK);
         }
     }
 

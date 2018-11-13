@@ -187,6 +187,25 @@ public class UserControllerTest {
         mockMvc.perform((get("/user").params(params))).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
+    @Test
+    public void requestForUserByEmailWhenInDatabaseRespondsWithUser() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findByEmail("adam@mms.com")).thenReturn(result);
+
+        User resultUser = new User();
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("email", "adam@mms.com");
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
+        resultUser.setId( Long.parseLong( JsonPath.parse(response).read("$[0].id").toString() ));
+        resultUser.setName(JsonPath.parse(response).read("$[0].name"));
+        resultUser.setEmail(JsonPath.parse(response).read("$[0].email"));
+        resultUser.setPassword(JsonPath.parse(response).read("$[0].password"));
+        resultUser.setElo(JsonPath.parse(response).read("$[0].elo"));
+
+        Assert.assertEquals(adam, resultUser);
+    }
+
     // todo test for email where user is in the mocked dataset - expect the given user object
     // todo test for email where user is not in the mocked dataset - expect not found response
 
