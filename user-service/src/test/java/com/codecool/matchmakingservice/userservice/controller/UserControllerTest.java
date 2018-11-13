@@ -139,7 +139,7 @@ public class UserControllerTest {
     @Test
     public void requestForUsersByNameWhenNotInDatabaseResponseIsEmptyList() throws Exception {
         List<User> mockedResultList = new LinkedList<>();
-        Mockito.when(repository.findAllByNameOrderByIdAscNameAsc("Eugene")).thenReturn(mockedResultList);
+        Mockito.when(repository.findAllByNameContainingOrderByIdAscNameAsc("Eugene")).thenReturn(mockedResultList);
         String[] expected = {};
 
         MultiValueMap<String, String> params = new HttpHeaders();
@@ -158,7 +158,7 @@ public class UserControllerTest {
         List<User> mockedResultList = new LinkedList<>();
         mockedResultList.add(wendy);
         mockedResultList.add(cindy);
-        Mockito.when(repository.findAllByNameOrderByIdAscNameAsc("dy")).thenReturn(mockedResultList);
+        Mockito.when(repository.findAllByNameContainingOrderByIdAscNameAsc("dy")).thenReturn(mockedResultList);
 
         String[] expected = {"Wendy", "Cindy"};
 

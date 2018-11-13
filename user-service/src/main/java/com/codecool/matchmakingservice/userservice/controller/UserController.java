@@ -86,7 +86,7 @@ public class UserController {
     }
 
     private ResponseEntity<List<User>> handleRequestByName(String name) {
-        List<User> users = repository.findAllByNameOrderByIdAscNameAsc(name);
+        List<User> users = repository.findAllByNameContainingOrderByIdAscNameAsc(name);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
