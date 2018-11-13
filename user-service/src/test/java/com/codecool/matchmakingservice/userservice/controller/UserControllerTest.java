@@ -181,10 +181,10 @@ public class UserControllerTest {
     }
 
     @Test
-    public void requestForUserByValidEmailAddressResponseTypeIsJsonWithUTF8CharsetAndStatusIsOk() throws Exception {
+    public void requestForUserByFormallyValidEmailAddressResponseTypeIsJsonWithUTF8Charset() throws Exception {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("email", "info@gmail.com");
-        mockMvc.perform((get("/user").params(params))).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        mockMvc.perform((get("/user").params(params))).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
