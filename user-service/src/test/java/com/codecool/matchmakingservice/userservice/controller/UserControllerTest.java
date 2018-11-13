@@ -42,6 +42,7 @@ public class UserControllerTest {
 
     private User adam;
     private User cindy;
+    private User wendy;
 
     @Before
     public void setup() {
@@ -51,6 +52,12 @@ public class UserControllerTest {
         adam.setEmail("adam@mms.com");
         adam.setPassword("password1");
         adam.setElo(100);
+        wendy = new User();
+        wendy.setId(2L);
+        wendy.setName("Wendy");
+        wendy.setEmail("wendy@mms.com");
+        wendy.setPassword("password2");
+        wendy.setElo(125);
         cindy = new User();
         cindy.setId(3L);
         cindy.setName("Cindy");
@@ -146,8 +153,25 @@ public class UserControllerTest {
         Assert.assertArrayEquals(expected , results);
     }
 
-    // todo test for name where users are in the mocked dataset - expect the given users (possibly multiple asserts)
+    @Test
+    public void requestForUsersByNameReturnsListOfUsersWithMatchingNames() throws Exception {
+        List<User> mockedResultList = new LinkedList<>();
+        mockedResultList.add(wendy);
+        mockedResultList.add(cindy);
+        Mockito.when(repository.findAllByNameOrderByIdAscNameAsc("dy")).thenReturn(mockedResultList);
 
+        String[] expected = {"Wendy", "Cindy"};
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("name", "dy");
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
+        JSONArray resultList = JsonPath.parse(response).read("$[*].name");
+        String[] results = new String[resultList.size()];
+        for (int i = 0; i < resultList.size(); i ++) {
+            results[i] = resultList.get(i).toString();
+        }
+        Assert.assertArrayEquals(expected , results);
+    }
 
     @Test
     public void requestForUserByInvalidEmailAddressRespondsWithBadRequest() throws Exception {
