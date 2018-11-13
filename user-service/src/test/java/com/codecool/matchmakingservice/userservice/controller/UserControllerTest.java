@@ -65,28 +65,29 @@ public class UserControllerTest {
     }
 
     @Test
-    public void requestForUserByIdWithMissingParamRespondsBadRequest() throws Exception{
-        mockMvc.perform(get("/user/id")).andExpect(status().isBadRequest());
+    public void requestForUserWithNoParamsRespondsWithListOfUsers() throws Exception{
+        String response = mockMvc.perform(get("/user")).andReturn().getResponse().getContentAsString();
+        Assert.assertNotNull(JsonPath.parse(response).read("$.length()"));
     }
 
     @Test
     public void requestForUserByNotNumericIdRespondsBadRequest() throws Exception{
-        mockMvc.perform(get("/user/id").param("id", "twentytwo")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user/twentytwo")).andExpect(status().isBadRequest());
     }
 
     @Test
     public void requestForUserByNegativeIdRespondsBadRequest() throws Exception{
-        mockMvc.perform(get("/user/id").param("id", "-15")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user/-15")).andExpect(status().isBadRequest());
     }
 
     @Test
     public void requestForUserByZeroIdRespondsBadRequest() throws Exception{
-        mockMvc.perform(get("/user/id").param("id", "0")).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user/0")).andExpect(status().isBadRequest());
     }
 
     @Test
     public void requestForUserByIdResponseTypeIsJsonWithUTF8Charset() throws Exception {
-        mockMvc.perform(get("/user/id").param("id", "1")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        mockMvc.perform(get("/user/1")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
@@ -96,7 +97,7 @@ public class UserControllerTest {
 
         User resultUser = new User();
 
-        String response = mockMvc.perform(get("/user/id").param("id", "1")).andReturn().getResponse().getContentAsString();
+        String response = mockMvc.perform(get("/user/1")).andReturn().getResponse().getContentAsString();
         resultUser.setId( Long.parseLong( JsonPath.parse(response).read("$.id").toString() ));
         resultUser.setName(JsonPath.parse(response).read("$.name"));
         resultUser.setEmail(JsonPath.parse(response).read("$.email"));
@@ -110,18 +111,22 @@ public class UserControllerTest {
     public void requestForUserByIdWhenUserNotInDatabaseRespondsWithNotFound() throws Exception {
         Optional<User> result = Optional.empty();
         Mockito.when(repository.findById(999L)).thenReturn(result);
-        mockMvc.perform(get("/user/id").param("id", "999")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/user/999")).andExpect(status().isNotFound());
     }
 
     @Test
     public void requestForUserByNameResponseTypeIsJsonWithUTF8Charset() throws Exception {
-        mockMvc.perform(get("/users/name").param("name", "Eugene")).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("name", "Eugene");
+        mockMvc.perform(get("/user").params(params)).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
     public void requestForUsersByNameResponseContainsAnArrayOfUsers() throws Exception {
-        String response = mockMvc.perform(get("/users/name").param("name", "Eugene")).andReturn().getResponse().getContentAsString();
-        Assert.assertNotNull(JsonPath.parse(response).read("$.users.length()"));
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("name", "Eugene");
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
+        Assert.assertNotNull(JsonPath.parse(response).read("$.length()"));
     }
 
     // todo test for name where users are in the mocked dataset - expect the given users (possibly multiple asserts)
@@ -130,12 +135,16 @@ public class UserControllerTest {
 
     @Test
     public void requestForUserByInvalidEmailAddressRespondsWithBadRequest() throws Exception {
-        mockMvc.perform(get("/user/email").param("email", "info@gmail.commm")).andExpect(status().isBadRequest());
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("email", "info@gmail.commm");
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
     public void requestForUserByValidEmailAddressResponseTypeIsJsonWithUTF8CharsetAndStatusIsOk() throws Exception {
-        mockMvc.perform((get("/user/email").param("email", "info@gmail.com"))).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("email", "info@gmail.com");
+        mockMvc.perform((get("/user").params(params))).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     // todo test for email where user is in the mocked dataset - expect the given user object
@@ -146,14 +155,14 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("min_elo", "0");
         params.set("max_elo", "0");
-        mockMvc.perform(get("/users/elo").params(params)).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+        mockMvc.perform(get("/user").params(params)).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 
     @Test
     public void requestForUserByEloMissingParamsRespondsWithBadRequest() throws Exception {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("min_elo", "0");
-        mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -161,7 +170,7 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("min_elo", "0");
         params.set("max_elo", "zero");
-        mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -169,7 +178,7 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("min_elo", "0");
         params.set("max_elo", "1.1");
-        mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -177,7 +186,7 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("min_elo", "0");
         params.set("max_elo", Long.toString(Long.MAX_VALUE));
-        mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -185,7 +194,7 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("min_elo", "0");
         params.set("max_elo", "-100");
-        mockMvc.perform(get("/users/elo").params(params)).andExpect(status().isOk());
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isOk());
     }
 
     @Test
@@ -199,7 +208,7 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("min_elo", "80");
         params.set("max_elo", "170");
-        String response = mockMvc.perform(get("/users/elo").params(params)).andReturn().getResponse().getContentAsString();
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
         JSONArray resultList = JsonPath.parse(response).read("$[*].name");
         String[] results = new String[resultList.size()];
         for (int i = 0; i < resultList.size(); i ++) {

@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -22,8 +23,36 @@ public class UserController {
     @Autowired
     UserRepository repository;
 
-    @GetMapping(path = "/user/id", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getUserById(@RequestParam("id") String id) {
+    @GetMapping(path = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<User>> getUsers(@RequestParam(value = "name", required = false) String name,
+                                               @RequestParam(value = "email", required = false) String email,
+                                               @RequestParam(value = "min_elo", required = false) String minElo,
+                                               @RequestParam(value = "max_elo", required = false) String maxElo) {
+        if (!(email == null)) {
+            if (!EmailValidator.getInstance().isValid(email)) {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            }
+        }
+        if (!(minElo == null || maxElo == null)) {
+            int smallestElo;
+            int highestElo;
+            try {
+                smallestElo = Integer.parseInt(minElo);
+                highestElo = Integer.parseInt(maxElo);
+            } catch (NumberFormatException ex) {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            }
+            List<User> users = repository.findAllByEloBetweenOrderByIdAscEloAsc(smallestElo, highestElo);
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } else if (!(minElo == null && maxElo == null)) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        }
+        List<User> userList = new ArrayList<>();
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> getUserById(@PathVariable("id") String id) {
         Long userId;
         try {
             userId = Long.parseLong(id);
@@ -39,34 +68,5 @@ public class UserController {
         } else {
             return new ResponseEntity<>(new User(), HttpStatus.NOT_FOUND);
         }
-    }
-
-    @GetMapping(path = "/users/name", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getUserByName(@RequestParam("name") String name) {
-        String userList = "{\"users\":[]}";
-        return new ResponseEntity<>(userList, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/user/email", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getUserByEmail(@RequestParam("email") String email) {
-        if (!EmailValidator.getInstance().isValid(email)) {
-            return new ResponseEntity<>("", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("", HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/users/elo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> getUserByElo(@RequestParam("min_elo") String minElo,
-                                               @RequestParam("max_elo") String maxElo) {
-        int smallestElo;
-        int highestElo;
-        try {
-            smallestElo = Integer.parseInt(minElo);
-            highestElo = Integer.parseInt(maxElo);
-        } catch (NumberFormatException ex) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-        }
-        List<User> users = repository.findAllByEloBetweenOrderByIdAscEloAsc(smallestElo, highestElo);
-        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
