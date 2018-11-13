@@ -188,6 +188,16 @@ public class UserControllerTest {
     }
 
     @Test
+    public void requestForUserByEmailWhenNotInDatabaseRespondsNotFound() throws Exception {
+        Optional<User> result = Optional.empty();
+        Mockito.when(repository.findByEmail("adam@mms.com")).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("email", "adam@mms.com");
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isNotFound());
+    }
+
+    @Test
     public void requestForUserByEmailWhenInDatabaseResponseIsOneElementArray() throws Exception {
         Optional<User> result = Optional.of(adam);
         Mockito.when(repository.findByEmail("adam@mms.com")).thenReturn(result);

@@ -84,6 +84,8 @@ public class UserController {
             Optional<User> optionalUser = repository.findByEmail(email);
             if (optionalUser.isPresent()) {
                 users.add(optionalUser.get());
+            } else {
+                return new ResponseEntity<>(users, HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(users, HttpStatus.OK);
         }
