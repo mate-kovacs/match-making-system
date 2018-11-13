@@ -29,26 +29,15 @@ public class UserController {
                                                @RequestParam(value = "min_elo", required = false) String minElo,
                                                @RequestParam(value = "max_elo", required = false) String maxElo) {
         if (!(email == null)) {
-            if (!EmailValidator.getInstance().isValid(email)) {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-            }
-        }
-        if (!(minElo == null || maxElo == null)) {
-            int smallestElo;
-            int highestElo;
-            try {
-                smallestElo = Integer.parseInt(minElo);
-                highestElo = Integer.parseInt(maxElo);
-            } catch (NumberFormatException ex) {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-            }
-            List<User> users = repository.findAllByEloBetweenOrderByIdAscEloAsc(smallestElo, highestElo);
-            return new ResponseEntity<>(users, HttpStatus.OK);
+            return handleRequestByEmail(email);
         } else if (!(minElo == null && maxElo == null)) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            return handleRequestByElo(minElo, maxElo);
+        } else if (! (name == null)) {
+            return handleRequestByName(name);
+        } else {
+            List<User> userList = new ArrayList<>();
+            return new ResponseEntity<>(userList, HttpStatus.OK);
         }
-        List<User> userList = new ArrayList<>();
-        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     @GetMapping(path = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,5 +57,36 @@ public class UserController {
         } else {
             return new ResponseEntity<>(new User(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    private ResponseEntity<List<User>> handleRequestByElo(String minElo, String maxElo) {
+        if (!(minElo == null || maxElo == null)) {
+            int smallestElo;
+            int highestElo;
+            try {
+                smallestElo = Integer.parseInt(minElo);
+                highestElo = Integer.parseInt(maxElo);
+            } catch (NumberFormatException ex) {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            }
+            List<User> users = repository.findAllByEloBetweenOrderByIdAscEloAsc(smallestElo, highestElo);
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private ResponseEntity<List<User>> handleRequestByEmail(String email) {
+        if (!EmailValidator.getInstance().isValid(email)) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        } else {
+            List<User> userList = new ArrayList<>();
+            return new ResponseEntity<>(userList, HttpStatus.OK);
+        }
+    }
+
+    private ResponseEntity<List<User>> handleRequestByName(String name) {
+        List<User> userList = new ArrayList<>();
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 }
