@@ -72,23 +72,23 @@ public class UserControllerTest {
     }
 
     @Test
-    public void requestForUserWithNoParamsRespondsWithListOfUsers() throws Exception{
+    public void requestForUserWithNoParamsRespondsWithListOfUsers() throws Exception {
         String response = mockMvc.perform(get("/user")).andReturn().getResponse().getContentAsString();
         Assert.assertNotNull(JsonPath.parse(response).read("$.length()"));
     }
 
     @Test
-    public void requestForUserByNotNumericIdRespondsBadRequest() throws Exception{
+    public void requestForUserByNotNumericIdRespondsBadRequest() throws Exception {
         mockMvc.perform(get("/user/twentytwo")).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void requestForUserByNegativeIdRespondsBadRequest() throws Exception{
+    public void requestForUserByNegativeIdRespondsBadRequest() throws Exception {
         mockMvc.perform(get("/user/-15")).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void requestForUserByZeroIdRespondsBadRequest() throws Exception{
+    public void requestForUserByZeroIdRespondsBadRequest() throws Exception {
         mockMvc.perform(get("/user/0")).andExpect(status().isBadRequest());
     }
 
@@ -105,7 +105,7 @@ public class UserControllerTest {
         User resultUser = new User();
 
         String response = mockMvc.perform(get("/user/1")).andReturn().getResponse().getContentAsString();
-        resultUser.setId( Long.parseLong( JsonPath.parse(response).read("$.id").toString() ));
+        resultUser.setId(Long.parseLong(JsonPath.parse(response).read("$.id").toString()));
         resultUser.setName(JsonPath.parse(response).read("$.name"));
         resultUser.setEmail(JsonPath.parse(response).read("$.email"));
         resultUser.setPassword(JsonPath.parse(response).read("$.password"));
@@ -147,10 +147,10 @@ public class UserControllerTest {
         String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
         JSONArray resultList = JsonPath.parse(response).read("$[*].name");
         String[] results = new String[resultList.size()];
-        for (int i = 0; i < resultList.size(); i ++) {
+        for (int i = 0; i < resultList.size(); i++) {
             results[i] = resultList.get(i).toString();
         }
-        Assert.assertArrayEquals(expected , results);
+        Assert.assertArrayEquals(expected, results);
     }
 
     @Test
@@ -167,10 +167,10 @@ public class UserControllerTest {
         String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
         JSONArray resultList = JsonPath.parse(response).read("$[*].name");
         String[] results = new String[resultList.size()];
-        for (int i = 0; i < resultList.size(); i ++) {
+        for (int i = 0; i < resultList.size(); i++) {
             results[i] = resultList.get(i).toString();
         }
-        Assert.assertArrayEquals(expected , results);
+        Assert.assertArrayEquals(expected, results);
     }
 
     @Test
@@ -206,7 +206,7 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("email", "adam@mms.com");
         String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
-        int resultLength = Integer.parseInt( JsonPath.parse(response).read("$.length()").toString() );
+        int resultLength = Integer.parseInt(JsonPath.parse(response).read("$.length()").toString());
 
         Assert.assertEquals(1, resultLength);
     }
@@ -221,7 +221,7 @@ public class UserControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("email", "adam@mms.com");
         String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
-        resultUser.setId( Long.parseLong( JsonPath.parse(response).read("$[0].id").toString() ));
+        resultUser.setId(Long.parseLong(JsonPath.parse(response).read("$[0].id").toString()));
         resultUser.setName(JsonPath.parse(response).read("$[0].name"));
         resultUser.setEmail(JsonPath.parse(response).read("$[0].email"));
         resultUser.setPassword(JsonPath.parse(response).read("$[0].password"));
@@ -229,9 +229,6 @@ public class UserControllerTest {
 
         Assert.assertEquals(adam, resultUser);
     }
-
-    // todo test for email where user is in the mocked dataset - expect the given user object
-    // todo test for email where user is not in the mocked dataset - expect not found response
 
     @Test
     public void requestForUserByEloResponseTypeIsJsonWithUTF8Charset() throws Exception {
@@ -294,9 +291,9 @@ public class UserControllerTest {
         String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
         JSONArray resultList = JsonPath.parse(response).read("$[*].name");
         String[] results = new String[resultList.size()];
-        for (int i = 0; i < resultList.size(); i ++) {
+        for (int i = 0; i < resultList.size(); i++) {
             results[i] = resultList.get(i).toString();
         }
-        Assert.assertArrayEquals(expected , results);
+        Assert.assertArrayEquals(expected, results);
     }
 }
