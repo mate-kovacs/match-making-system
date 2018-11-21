@@ -1,9 +1,6 @@
 package com.codecool.matchmakingservice.userservice.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +17,7 @@ public class User {
 
     private String email;
 
+    @Enumerated
     private Status status;
 
     private int elo;
