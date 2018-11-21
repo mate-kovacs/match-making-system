@@ -19,6 +19,8 @@ public class User {
 
     private String email;
 
+    private Status status;
+
     private int elo;
 
     public User() {
@@ -62,5 +64,13 @@ public class User {
 
     public void setElo(int elo) {
         this.elo = elo;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
