@@ -316,4 +316,21 @@ public class UserControllerTest {
         Assert.assertNotNull(JsonPath.parse(response).read("$.length()"));
     }
 
+    @Test
+    public void requestForUsersByStatusWhenNoUserByThatStatusIsEmptyList() throws Exception {
+        List<User> mockedResultList = new LinkedList<>();
+        Mockito.when(repository.findAllByNameContainingOrderByIdAscNameAsc("Eugene")).thenReturn(mockedResultList);
+        String[] expected = {};
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("status", "IN_GAME");
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
+        JSONArray resultList = JsonPath.parse(response).read("$[*].name");
+        String[] results = new String[resultList.size()];
+        for (int i = 0; i < resultList.size(); i++) {
+            results[i] = resultList.get(i).toString();
+        }
+        Assert.assertArrayEquals(expected, results);
+    }
+
 }
