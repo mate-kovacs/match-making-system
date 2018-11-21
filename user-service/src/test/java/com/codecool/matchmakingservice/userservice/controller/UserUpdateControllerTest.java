@@ -87,4 +87,11 @@ public class UserUpdateControllerTest {
         mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Email address already in use."));
     }
 
+    // todo check for missing parameters (it should be handled by a different method that turns a json into a user)
+    // todo check for validity of password (it should be a hash)
+
+    // todo put request for user/id (to update a given user's certain property)
+    
+    // todo delete request for user/id (to delete a certain user - not that likely to be necessary)
+
 }
