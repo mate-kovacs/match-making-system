@@ -1,5 +1,6 @@
 package com.codecool.matchmakingservice.userservice.controller;
 
+import com.codecool.matchmakingservice.userservice.model.Status;
 import com.codecool.matchmakingservice.userservice.model.User;
 import com.codecool.matchmakingservice.userservice.repository.UserRepository;
 import com.jayway.jsonpath.JsonPath;
@@ -51,18 +52,21 @@ public class UserControllerTest {
         adam.setName("Adam");
         adam.setEmail("adam@mms.com");
         adam.setPassword("password1");
+        adam.setStatus(Status.OFFLINE);
         adam.setElo(100);
         wendy = new User();
         wendy.setId(2L);
         wendy.setName("Wendy");
         wendy.setEmail("wendy@mms.com");
         wendy.setPassword("password2");
+        wendy.setStatus(Status.OFFLINE);
         wendy.setElo(125);
         cindy = new User();
         cindy.setId(3L);
         cindy.setName("Cindy");
         cindy.setEmail("cindy@mms.com");
         cindy.setPassword("password3");
+        cindy.setStatus(Status.ONLINE);
         cindy.setElo(150);
     }
 
