@@ -300,4 +300,20 @@ public class UserControllerTest {
         }
         Assert.assertArrayEquals(expected, results);
     }
+
+    @Test
+    public void requestForUserByStatusResponseTypeIsJsonWithUTF8Charset() throws Exception {
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("status", "ONLINE");
+        mockMvc.perform(get("/user").params(params)).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+    }
+
+    @Test
+    public void requestForUsersByStatusResponseContainsAnArrayOfUsers() throws Exception {
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("status", "ONLINE");
+        String response = mockMvc.perform(get("/user").params(params)).andReturn().getResponse().getContentAsString();
+        Assert.assertNotNull(JsonPath.parse(response).read("$.length()"));
+    }
+
 }
