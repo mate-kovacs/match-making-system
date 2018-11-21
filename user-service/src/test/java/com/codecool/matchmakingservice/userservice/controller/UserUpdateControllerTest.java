@@ -7,11 +7,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -74,6 +77,14 @@ public class UserUpdateControllerTest {
     public void postRequestNewUserIntoDatabaseWithInValidEmailRespondsBadRequest() throws Exception {
         adam.setEmail("adam@mms.commm");
         mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Invalid email."));
+    }
+
+    @Test
+    public void postRequestNewUserIntoDatabaseWhenUserAlreadyInDatabaseRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findByEmail("adam@mms.com")).thenReturn(result);
+
+        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Email address already in use."));
     }
 
 }

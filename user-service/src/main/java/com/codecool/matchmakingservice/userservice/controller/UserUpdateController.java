@@ -28,7 +28,7 @@ public class UserUpdateController {
         user.setElo(JsonPath.parse(userJson).read("$.elo"));
         String statusString = JsonPath.parse(userJson).read("$.status");
         UserStatus status = UserStatus.DEFAULT;
-        for (UserStatus current: UserStatus.values()) {
+        for (UserStatus current : UserStatus.values()) {
             if (current.name().equals(statusString)) {
                 status = current;
             }
@@ -38,6 +38,10 @@ public class UserUpdateController {
         if (!EmailValidator.getInstance().isValid(user.getEmail())) {
             return new ResponseEntity<>("Invalid email.", HttpStatus.BAD_REQUEST);
         }
+        if (repository.findByEmail(user.getEmail()).isPresent()) {
+            return new ResponseEntity<>("Email address already in use.", HttpStatus.BAD_REQUEST);
+        }
+        repository.save(user);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 }
