@@ -1,8 +1,9 @@
 package com.codecool.matchmakingservice.userservice.model;
 
-public enum Status {
+public enum UserStatus {
     OFFLINE,
     ONLINE,
     IN_QUEUE,
-    IN_GAME
+    IN_GAME,
+    DEFAULT
 }

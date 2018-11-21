@@ -18,7 +18,7 @@ public class User {
     private String email;
 
     @Enumerated
-    private Status status;
+    private UserStatus status;
 
     private int elo;
 
@@ -65,11 +65,11 @@ public class User {
         this.elo = elo;
     }
 
-    public Status getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 
