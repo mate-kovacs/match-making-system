@@ -108,6 +108,9 @@ public class UserController {
                 status = current;
             }
         }
+        if (status == UserStatus.DEFAULT) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        }
         List<User> users = repository.findAllByStatusOrderByIdAscNameAsc(status);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
