@@ -33,6 +33,7 @@ public class UserUpdateControllerTest {
     private User adam;
     private User cindy;
     private User wendy;
+    private User invaLidi;
 
     @Before
     public void setup() {
@@ -67,6 +68,12 @@ public class UserUpdateControllerTest {
     @Test
     public void postRequestNewUserIntoDatabaseWithValidInputRespondsOk() throws Exception {
         mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isOk());
+    }
+
+    @Test
+    public void postRequestNewUserIntoDatabaseWithInValidEmailRespondsBadRequest() throws Exception {
+        adam.setEmail("adam@mms.commm");
+        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Invalid email."));
     }
 
 }
