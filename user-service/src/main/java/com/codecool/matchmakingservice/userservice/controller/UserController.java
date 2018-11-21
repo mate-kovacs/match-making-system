@@ -1,7 +1,9 @@
 package com.codecool.matchmakingservice.userservice.controller;
 
+import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import com.codecool.matchmakingservice.userservice.repository.UserRepository;
 import com.codecool.matchmakingservice.userservice.model.User;
+import org.hibernate.engine.spi.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,13 +29,16 @@ public class UserController {
     public ResponseEntity<List<User>> getUsers(@RequestParam(value = "name", required = false) String name,
                                                @RequestParam(value = "email", required = false) String email,
                                                @RequestParam(value = "min_elo", required = false) String minElo,
-                                               @RequestParam(value = "max_elo", required = false) String maxElo) {
+                                               @RequestParam(value = "max_elo", required = false) String maxElo,
+                                               @RequestParam(value = "status", required = false) String status) {
         if (!(email == null)) {
             return handleRequestByEmail(email);
         } else if (!(minElo == null && maxElo == null)) {
             return handleRequestByElo(minElo, maxElo);
         } else if (! (name == null)) {
             return handleRequestByName(name);
+        } else if (! (status == null)) {
+            return handleRequestByStatus(status);
         } else {
             List<User> userList = new ArrayList<>();
             return new ResponseEntity<>(userList, HttpStatus.OK);
@@ -93,6 +98,17 @@ public class UserController {
 
     private ResponseEntity<List<User>> handleRequestByName(String name) {
         List<User> users = repository.findAllByNameContainingOrderByIdAscNameAsc(name);
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    private ResponseEntity<List<User>> handleRequestByStatus(String statusName) {
+        UserStatus status = UserStatus.DEFAULT;
+        for (UserStatus current: UserStatus.values()) {
+            if (current.name().equals(statusName)) {
+                status = current;
+            }
+        }
+        List<User> users = repository.findAllByStatusOrderByIdAscNameAsc(status);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

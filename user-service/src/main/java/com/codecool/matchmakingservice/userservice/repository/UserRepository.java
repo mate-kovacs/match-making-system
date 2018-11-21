@@ -1,6 +1,6 @@
 package com.codecool.matchmakingservice.userservice.repository;
 
-import com.codecool.matchmakingservice.userservice.model.Status;
+import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import com.codecool.matchmakingservice.userservice.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,5 +15,5 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     List<User> findAllByEloBetweenOrderByIdAscEloAsc(int minElo, int maxElo);
 
-    List<User> findAllByStatusOrderByIdAscNameAsc(Status status);
+    List<User> findAllByStatusOrderByIdAscNameAsc(UserStatus status);
 }
