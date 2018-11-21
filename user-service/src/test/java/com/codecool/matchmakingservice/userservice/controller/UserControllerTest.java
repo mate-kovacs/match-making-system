@@ -317,6 +317,13 @@ public class UserControllerTest {
     }
 
     @Test
+    public void requestForUsersByInvalidStatusRespondsWithBadRequest() throws Exception {
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("status", "trolololol");
+        mockMvc.perform(get("/user").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void requestForUsersByStatusWhenNoUserByThatStatusIsEmptyList() throws Exception {
         List<User> mockedResultList = new LinkedList<>();
         Mockito.when(repository.findAllByStatusOrderByIdAscNameAsc(UserStatus.IN_GAME)).thenReturn(mockedResultList);
