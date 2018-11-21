@@ -1,6 +1,7 @@
 package com.codecool.matchmakingservice.userservice.controller;
 
 import com.codecool.matchmakingservice.userservice.repository.UserRepository;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserUpdateController.class)
@@ -24,6 +27,9 @@ public class UserUpdateControllerTest {
     @InjectMocks
     private UserUpdateController controller;
 
-    
+    @Test
+    public void postRequestNewUserIntoDatabaseWithMissingBodyRespondsBadRequestAndMissingDataMessage() throws Exception {
+        mockMvc.perform(post("/user")).andExpect(status().isBadRequest()).andExpect(content().string("Data is missing."));
+    }
 
 }
