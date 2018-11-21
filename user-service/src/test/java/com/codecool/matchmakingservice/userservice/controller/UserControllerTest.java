@@ -177,6 +177,7 @@ public class UserControllerTest {
         Assert.assertArrayEquals(expected, results);
     }
 
+    //todo get a reliabe list of fake emails and use rhose for invalid email testing
     @Test
     public void requestForUserByInvalidEmailAddressRespondsWithBadRequest() throws Exception {
         MultiValueMap<String, String> params = new HttpHeaders();
