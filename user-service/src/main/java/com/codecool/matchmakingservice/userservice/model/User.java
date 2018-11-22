@@ -90,4 +90,15 @@ public class User {
 
         return Objects.hash(id, name, password, email, elo);
     }
+
+    public String toJSonString() {
+        return "{" +
+                "id:" + id +
+                ", name:'" + name + "\'" +
+                ", password:'" + password + "\'" +
+                ", email:'" + email + "\'" +
+                ", status:" + status +
+                ", elo:" + elo +
+                '}';
+    }
 }
