@@ -70,6 +70,9 @@ public class UserUpdateControllerTest {
         cindy.setElo(150);
         //todo mock the getUserFromJson method correctly for the unit tests instead of using it
         Mockito.when(service.getUserFromJson(Mockito.anyString())).thenCallRealMethod();
+        Mockito.when(service.checkEmail(Mockito.anyString())).thenCallRealMethod();
+        Mockito.when(service.checkName(Mockito.anyString())).thenCallRealMethod();
+        Mockito.when(service.checkPassword(Mockito.anyString())).thenCallRealMethod();
     }
 
     @Test
@@ -226,13 +229,43 @@ public class UserUpdateControllerTest {
     }
 
     @Test
-    public void putRequestForValidUserWithpasswordRespondsOk() throws Exception {
+    public void putRequestForValidUserWithPasswordRespondsOk() throws Exception {
         Optional<User> result = Optional.of(adam);
         Mockito.when(repository.findById(1L)).thenReturn(result);
 
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("userparam", "password");
         mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{password: 'adampass'}").params(params)).andExpect(status().isOk());
+    }
+
+    @Test
+    public void putRequestForValidUserWithEmailButNameIsMissingFromBodyRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "email");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithInvalidEmailRespondBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "email");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{email: 'adam@mms.commmm'}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithEmailRespondsOk() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "email");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{email: 'adam@mms.com'}").params(params)).andExpect(status().isOk());
     }
 
     // todo put request for user/id (to update a given user's certain property)

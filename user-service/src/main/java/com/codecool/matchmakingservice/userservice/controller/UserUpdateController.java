@@ -7,6 +7,8 @@ import com.codecool.matchmakingservice.userservice.repository.UserRepository;
 import com.codecool.matchmakingservice.userservice.service.UserService;
 import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPathException;
+import com.jayway.jsonpath.PathNotFoundException;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +88,7 @@ public class UserUpdateController {
                     user.setPassword(JsonPath.parse(userJson).read("$.password"));
                     break;
                 case "email":
-                    user.setEmail(JsonPath.parse(userJson).read("$.email"));
+                    user.setEmail(service.checkEmail(JsonPath.parse(userJson).read("$.email")));
                     break;
                 case "elo":
                     user.setElo(JsonPath.parse(userJson).read("$.elo"));
@@ -109,7 +111,7 @@ public class UserUpdateController {
                 default:
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-        } catch (JsonPathException ex) {
+        } catch (PathNotFoundException | InvalidJsonException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
