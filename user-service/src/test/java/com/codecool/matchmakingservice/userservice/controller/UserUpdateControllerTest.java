@@ -126,6 +126,11 @@ public class UserUpdateControllerTest {
 
     // todo check for validity of password (it should be a hash)
 
+    @Test
+    public void deleteRequestForInvalidIdRespondsBadRequest() throws Exception {
+        mockMvc.perform(delete("/user/test")).andExpect(status().isBadRequest());
+    }
+
     // todo put request for user/id (to update a given user's certain property)
     
     // todo delete request for user/id (to delete a certain user - not that likely to be necessary)
