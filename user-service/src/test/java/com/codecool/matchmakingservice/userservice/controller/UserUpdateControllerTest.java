@@ -147,14 +147,21 @@ public class UserUpdateControllerTest {
 
     @Test
     public void putRequestForInvalidIdRespondsBadRequest() throws Exception {
-        mockMvc.perform(put("/user/test")).andExpect(status().isBadRequest());
+        mockMvc.perform(put("/user/test").content("{}")).andExpect(status().isBadRequest());
     }
 
     @Test
     public void putRequestForUserThatIsNotInDatabaseRespondsNotFound() throws Exception {
         Optional<User> result = Optional.empty();
         Mockito.when(repository.findById(999L)).thenReturn(result);
-        mockMvc.perform(put("/user/999")).andExpect(status().isNotFound());
+        mockMvc.perform(put("/user/999").content("{}")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void putRequestForValidUserWithEmptyBodyRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+        mockMvc.perform(put("/user/1").content("")).andExpect(status().isBadRequest());
     }
 
     // todo put request for user/id (to update a given user's certain property)

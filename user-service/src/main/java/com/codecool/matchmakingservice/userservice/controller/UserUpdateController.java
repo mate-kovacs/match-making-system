@@ -54,17 +54,17 @@ public class UserUpdateController {
     }
 
     @PutMapping(path = "user/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable("id") String id) {
+    public ResponseEntity<Void> updateUser(@PathVariable("id") String id,
+                                           @RequestBody String userJson) {
         Long userId;
         try {
             userId = Long.parseLong(id);
         } catch (NumberFormatException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (repository.findById(userId).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
+        if (!repository.findById(userId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
