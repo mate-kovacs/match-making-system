@@ -147,6 +147,4 @@ public class UserUpdateControllerTest {
 
     // todo put request for user/id (to update a given user's certain property)
     
-    // todo delete request for user/id (to delete a certain user - not that likely to be necessary)
-
 }
