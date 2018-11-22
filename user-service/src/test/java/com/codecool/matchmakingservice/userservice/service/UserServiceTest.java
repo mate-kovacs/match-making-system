@@ -1,12 +1,16 @@
 package com.codecool.matchmakingservice.userservice.service;
 
 import com.codecool.matchmakingservice.userservice.model.InvalidUserParameterException;
+import com.codecool.matchmakingservice.userservice.model.User;
+import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.validation.constraints.AssertTrue;
 
 import static org.junit.Assert.*;
 
@@ -18,9 +22,18 @@ public class UserServiceTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
+    private User adam;
+
     @Before
     public void setup() {
         service = new UserService();
+        adam = new User();
+        adam.setId(1L);
+        adam.setName("Adam");
+        adam.setEmail("adam@mms.com");
+        adam.setPassword("password1");
+        adam.setStatus(UserStatus.OFFLINE);
+        adam.setElo(100);
     }
 
     @Test
@@ -35,5 +48,10 @@ public class UserServiceTest {
         exceptionRule.expect(InvalidUserParameterException.class);
         exceptionRule.expectMessage("Invalid user data.");
         service.getUserFromJson("{name:'Adam', pass");
+    }
+
+    @Test
+    public void getUserFromJsonForValidParameterReturnsUser() {
+        assertTrue(service.getUserFromJson(adam.toJSonString()).equals(adam));
     }
 }
