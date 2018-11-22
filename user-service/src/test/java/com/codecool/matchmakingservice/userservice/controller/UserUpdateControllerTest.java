@@ -3,6 +3,7 @@ package com.codecool.matchmakingservice.userservice.controller;
 import com.codecool.matchmakingservice.userservice.model.User;
 import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import com.codecool.matchmakingservice.userservice.repository.UserRepository;
+import com.codecool.matchmakingservice.userservice.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,9 @@ public class UserUpdateControllerTest {
 
     @MockBean
     private UserRepository repository;
+
+    @MockBean
+    private UserService service;
 
     @InjectMocks
     private UserUpdateController controller;
@@ -61,6 +65,8 @@ public class UserUpdateControllerTest {
         cindy.setPassword("password3");
         cindy.setStatus(UserStatus.ONLINE);
         cindy.setElo(150);
+        //todo mock the getUserFromJson method correctly for the unit tests instead of using it
+        Mockito.when(service.getUserFromJson(Mockito.anyString())).thenCallRealMethod();
     }
 
     @Test
@@ -76,7 +82,7 @@ public class UserUpdateControllerTest {
     @Test
     public void postRequestNewUserIntoDatabaseWithInValidEmailRespondsBadRequest() throws Exception {
         adam.setEmail("adam@mms.commm");
-        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Invalid email."));
+        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Invalid user data."));
     }
 
     @Test
