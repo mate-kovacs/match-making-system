@@ -131,6 +131,11 @@ public class UserUpdateControllerTest {
         mockMvc.perform(delete("/user/test")).andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void deleteRequestForUserThatIsNotInDatabaseResponseIsNotFound() throws Exception {
+        mockMvc.perform(delete("/user/999")).andExpect(status().isNotFound());
+    }
+
     // todo put request for user/id (to update a given user's certain property)
     
     // todo delete request for user/id (to delete a certain user - not that likely to be necessary)
