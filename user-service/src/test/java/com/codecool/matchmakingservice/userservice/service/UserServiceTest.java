@@ -82,4 +82,12 @@ public class UserServiceTest {
         exceptionRule.expectMessage("Invalid user data.");
         service.getUserFromJson(adam.toJSonString());
     }
+
+    @Test
+    public void getUserFromJsonWithMissingPasswordThrowsException() {
+        adam.setPassword(null);
+        exceptionRule.expect(InvalidUserDataException.class);
+        exceptionRule.expectMessage("Invalid user data.");
+        service.getUserFromJson(adam.toJSonString());
+    }
 }

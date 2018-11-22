@@ -20,7 +20,7 @@ public class UserService {
                 user.setId(null);
             }
             user.setEmail(checkEmail(JsonPath.parse(userJson).read("$.email")));
-            user.setPassword(JsonPath.parse(userJson).read("$.password"));
+            user.setPassword(checkPassword(JsonPath.parse(userJson).read("$.password")));
             user.setName(checkName(JsonPath.parse(userJson).read("$.name")));
             user.setElo(JsonPath.parse(userJson).read("$.elo"));
             String statusString = JsonPath.parse(userJson).read("$.status");
@@ -35,6 +35,13 @@ public class UserService {
         } catch (IllegalArgumentException | InvalidJsonException ex) {
             throw new InvalidUserDataException("Invalid user data.");
         }
+    }
+
+    private String checkPassword(String password) {
+        if (password.equals("null")) {
+            throw new InvalidJsonException();
+        }
+        return password;
     }
 
     private String checkEmail(String email) {
