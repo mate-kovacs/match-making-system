@@ -215,6 +215,26 @@ public class UserUpdateControllerTest {
         mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{name: 'Adam'}").params(params)).andExpect(status().isOk());
     }
 
+    @Test
+    public void putRequestForValidUserWithPasswordButNameIsMissingFromBodyRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "password");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithpasswordRespondsOk() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "password");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{password: 'adampass'}").params(params)).andExpect(status().isOk());
+    }
+
     // todo put request for user/id (to update a given user's certain property)
     
 }
