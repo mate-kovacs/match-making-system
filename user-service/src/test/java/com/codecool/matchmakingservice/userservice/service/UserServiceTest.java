@@ -1,6 +1,6 @@
 package com.codecool.matchmakingservice.userservice.service;
 
-import com.codecool.matchmakingservice.userservice.model.InvalidUserParameterException;
+import com.codecool.matchmakingservice.userservice.model.InvalidUserDataException;
 import com.codecool.matchmakingservice.userservice.model.User;
 import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import org.junit.Before;
@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.validation.constraints.AssertTrue;
 
 import static org.junit.Assert.*;
 
@@ -38,14 +36,14 @@ public class UserServiceTest {
 
     @Test
     public void getUserFromJsonForNullParameterThrowsExceptionWithMessageInvalidInput() {
-        exceptionRule.expect(InvalidUserParameterException.class);
+        exceptionRule.expect(InvalidUserDataException.class);
         exceptionRule.expectMessage("Invalid user data.");
         service.getUserFromJson(null);
     }
 
     @Test
     public void getUserFromJsonForNotJsonStringParameterThrowsExceptionWithMessageInvalidInput() {
-        exceptionRule.expect(InvalidUserParameterException.class);
+        exceptionRule.expect(InvalidUserDataException.class);
         exceptionRule.expectMessage("Invalid user data.");
         service.getUserFromJson("{name:'Adam', pass");
     }

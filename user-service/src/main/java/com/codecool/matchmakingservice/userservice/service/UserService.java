@@ -1,8 +1,9 @@
 package com.codecool.matchmakingservice.userservice.service;
 
-import com.codecool.matchmakingservice.userservice.model.InvalidUserParameterException;
+import com.codecool.matchmakingservice.userservice.model.InvalidUserDataException;
 import com.codecool.matchmakingservice.userservice.model.User;
 import com.codecool.matchmakingservice.userservice.model.UserStatus;
+import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,8 @@ public class UserService {
             }
             user.setStatus(status);
             return user;
-        } catch (Exception ex) {
-            throw new InvalidUserParameterException("Invalid user data.");
+        } catch (IllegalArgumentException | InvalidJsonException ex) {
+            throw new InvalidUserDataException("Invalid user data.");
         }
     }
 }
