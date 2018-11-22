@@ -5,6 +5,7 @@ import com.codecool.matchmakingservice.userservice.model.User;
 import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class UserService {
                 user.setStatus(status);
             }
             return user;
-        } catch (IllegalArgumentException | InvalidJsonException ex) {
+        } catch (PathNotFoundException | IllegalArgumentException | InvalidJsonException ex) {
             throw new InvalidUserDataException("Invalid user data.");
         }
     }

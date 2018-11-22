@@ -99,6 +99,15 @@ public class UserServiceTest {
         service.getUserFromJson(adam.toJSonString());
     }
 
+    @Test
+    public void getUserFromJsonWithMissingEloThrowsException() {
+        String userJson = "{'id':6, 'name':'bill', 'password':'billpass', 'email':'bill@mms.com'," +
+                "'status':'OFFLINE'}";
+        exceptionRule.expect(InvalidUserDataException.class);
+        exceptionRule.expectMessage("Invalid user data.");
+        service.getUserFromJson(userJson);
+    }
+
     //todo possible check for invalid password (it should be a hash)
 
     //todo possibly update the check for invalid parameters with more business logic (such as banned characters from user names, etc.)
