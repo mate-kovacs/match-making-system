@@ -98,4 +98,8 @@ public class UserServiceTest {
         exceptionRule.expectMessage("Invalid user data.");
         service.getUserFromJson(adam.toJSonString());
     }
+
+    //todo possible check for invalid password (it should be a hash)
+
+    //todo possibly update the check for invalid parameters with more business logic (such as banned characters from user names, etc.)
 }
