@@ -6,9 +6,7 @@ import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import com.codecool.matchmakingservice.userservice.repository.UserRepository;
 import com.codecool.matchmakingservice.userservice.service.UserService;
 import com.jayway.jsonpath.InvalidJsonException;
-import com.jayway.jsonpath.JsonPathException;
 import com.jayway.jsonpath.PathNotFoundException;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,10 +80,10 @@ public class UserUpdateController {
         try {
             switch (userProperty) {
                 case "name":
-                    user.setName(JsonPath.parse(userJson).read("$.name"));
+                    user.setName(service.checkName(JsonPath.parse(userJson).read("$.name")));
                     break;
                 case "password":
-                    user.setPassword(JsonPath.parse(userJson).read("$.password"));
+                    user.setPassword(service.checkPassword(JsonPath.parse(userJson).read("$.password")));
                     break;
                 case "email":
                     user.setEmail(service.checkEmail(JsonPath.parse(userJson).read("$.email")));

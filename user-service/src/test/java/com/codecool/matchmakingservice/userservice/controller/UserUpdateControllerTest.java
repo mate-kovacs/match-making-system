@@ -209,6 +209,16 @@ public class UserUpdateControllerTest {
     }
 
     @Test
+    public void putRequestForValidUserWithInvalidNameRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "name");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{name: 'null'}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void putRequestForValidUserWithNameRespondsOk() throws Exception {
         Optional<User> result = Optional.of(adam);
         Mockito.when(repository.findById(1L)).thenReturn(result);
@@ -226,6 +236,16 @@ public class UserUpdateControllerTest {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("userparam", "password");
         mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithInvalidPasswordRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "password");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{password: 'null'}").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
