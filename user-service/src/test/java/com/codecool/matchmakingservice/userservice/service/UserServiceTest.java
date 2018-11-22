@@ -90,4 +90,12 @@ public class UserServiceTest {
         exceptionRule.expectMessage("Invalid user data.");
         service.getUserFromJson(adam.toJSonString());
     }
+
+    @Test
+    public void getUserFromJsonWithMissingStatusThrowsException() {
+        adam.setStatus(null);
+        exceptionRule.expect(InvalidUserDataException.class);
+        exceptionRule.expectMessage("Invalid user data.");
+        service.getUserFromJson(adam.toJSonString());
+    }
 }

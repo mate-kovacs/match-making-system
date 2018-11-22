@@ -28,9 +28,14 @@ public class UserService {
             for (UserStatus current : UserStatus.values()) {
                 if (current.name().equals(statusString)) {
                     status = current;
+                    break;
                 }
             }
-            user.setStatus(status);
+            if (status == UserStatus.DEFAULT) {
+                throw new InvalidJsonException();
+            } else {
+                user.setStatus(status);
+            }
             return user;
         } catch (IllegalArgumentException | InvalidJsonException ex) {
             throw new InvalidUserDataException("Invalid user data.");
