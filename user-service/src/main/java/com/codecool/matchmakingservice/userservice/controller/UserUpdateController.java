@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.jayway.jsonpath.JsonPath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class UserUpdateController {
 
@@ -58,6 +61,12 @@ public class UserUpdateController {
                                            @RequestBody String userJson,
                                            @RequestParam("userparam") String userProperty) {
         Long userId;
+        List<String> validUserProperties = new ArrayList<>();
+        validUserProperties.add("name");
+        validUserProperties.add("password");
+        validUserProperties.add("email");
+        validUserProperties.add("elo");
+        validUserProperties.add("status");
         try {
             userId = Long.parseLong(id);
         } catch (NumberFormatException ex) {
@@ -65,6 +74,9 @@ public class UserUpdateController {
         }
         if (!repository.findById(userId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (! validUserProperties.contains(userProperty)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
