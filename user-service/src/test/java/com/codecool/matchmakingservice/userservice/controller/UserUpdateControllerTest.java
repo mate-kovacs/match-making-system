@@ -117,7 +117,13 @@ public class UserUpdateControllerTest {
         mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isOk());
     }
 
-    // todo check for missing parameters (it should be handled by a different method that turns a json into a user)
+    @Test
+    public void postRequestNewUserIntoDatabaseWithMissingEloRespondsBadRequest() throws Exception {
+        String userJson = "{'id':6, 'name':'bill', 'password':'billpass', 'email':'bill@mms.com'," +
+            "'status':'OFFLINE'}";
+        mockMvc.perform(post("/user").content(userJson)).andExpect(status().isBadRequest()).andExpect(content().string("Invalid user data."));
+    }
+
     // todo check for validity of password (it should be a hash)
 
     // todo put request for user/id (to update a given user's certain property)
