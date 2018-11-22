@@ -288,6 +288,33 @@ public class UserUpdateControllerTest {
         mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{email: 'adam@mms.com'}").params(params)).andExpect(status().isOk());
     }
 
-    // todo put request for user/id (to update a given user's certain property)
-    
+    @Test
+    public void putRequestForValidUserWithEloButNameIsMissingFromBodyRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "elo");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithInvalidEloRespondBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "elo");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{elo: 'invalid'}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithEliRespondsOk() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "elo");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{elo: 100}").params(params)).andExpect(status().isOk());
+    }
 }

@@ -89,7 +89,7 @@ public class UserUpdateController {
                     user.setEmail(service.checkEmail(JsonPath.parse(userJson).read("$.email")));
                     break;
                 case "elo":
-                    user.setElo(JsonPath.parse(userJson).read("$.elo"));
+                    user.setElo(Integer.parseInt((JsonPath.parse(userJson).read("$.elo")).toString()));
                     break;
                 case "status":
                     String statusString = JsonPath.parse(userJson).read("$.status");
@@ -109,7 +109,7 @@ public class UserUpdateController {
                 default:
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-        } catch (PathNotFoundException | InvalidJsonException ex) {
+        } catch (PathNotFoundException | InvalidJsonException | NumberFormatException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
