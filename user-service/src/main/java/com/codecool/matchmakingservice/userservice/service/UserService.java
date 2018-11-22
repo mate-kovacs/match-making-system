@@ -43,24 +43,63 @@ public class UserService {
         }
     }
 
-    public String checkPassword(String password) {
+    private String checkPassword(String password) {
         if (password.equals("null")) {
             throw new InvalidJsonException();
         }
         return password;
     }
 
-    public String checkEmail(String email) {
+    private String checkEmail(String email) {
         if (!EmailValidator.getInstance().isValid(email)) {
             throw new InvalidJsonException();
         }
         return email;
     }
 
-    public String checkName(String name) {
+    private String checkName(String name) {
         if (name.equals("null")) {
             throw new InvalidJsonException();
         }
         return name;
+    }
+
+    public boolean updateUserProperty(String userJson, String userProperty, Long userId, User user) {
+        try {
+            switch (userProperty) {
+                case "name":
+                    user.setName(checkName(JsonPath.parse(userJson).read("$.name")));
+                    break;
+                case "password":
+                    user.setPassword(checkPassword(JsonPath.parse(userJson).read("$.password")));
+                    break;
+                case "email":
+                    user.setEmail(checkEmail(JsonPath.parse(userJson).read("$.email")));
+                    break;
+                case "elo":
+                    user.setElo(Integer.parseInt((JsonPath.parse(userJson).read("$.elo")).toString()));
+                    break;
+                case "status":
+                    String statusString = JsonPath.parse(userJson).read("$.status");
+                    UserStatus status = UserStatus.DEFAULT;
+                    for (UserStatus current : UserStatus.values()) {
+                        if (current.name().equals(statusString)) {
+                            status = current;
+                            break;
+                        }
+                    }
+                    if (status == UserStatus.DEFAULT) {
+                        throw new InvalidJsonException();
+                    } else {
+                        user.setStatus(status);
+                    }
+                    break;
+                default:
+                    return false;
+            }
+        } catch (PathNotFoundException | InvalidJsonException | NumberFormatException ex) {
+            return false;
+        }
+        return true;
     }
 }
