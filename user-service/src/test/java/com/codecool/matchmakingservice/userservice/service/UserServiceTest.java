@@ -29,4 +29,11 @@ public class UserServiceTest {
         exceptionRule.expectMessage("Invalid user data.");
         service.getUserFromJson(null);
     }
+
+    @Test
+    public void getUserFromJsonForNotJsonStringParameterThrowsExceptionWithMessageInvalidInput() {
+        exceptionRule.expect(InvalidUserParameterException.class);
+        exceptionRule.expectMessage("Invalid user data.");
+        service.getUserFromJson("{name:'Adam', pass");
+    }
 }
