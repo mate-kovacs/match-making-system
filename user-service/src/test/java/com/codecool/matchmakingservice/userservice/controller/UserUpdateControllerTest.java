@@ -93,6 +93,30 @@ public class UserUpdateControllerTest {
         mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Email address already in use."));
     }
 
+    @Test
+    public void postRequestNewUserIntoDatabaseWithInValidNameRespondsBadRequest() throws Exception {
+        adam.setName(null);
+        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Invalid user data."));
+    }
+
+    @Test
+    public void postRequestNewUserIntoDatabaseWithInValidPasswordRespondsBadRequest() throws Exception {
+        adam.setPassword(null);
+        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Invalid user data."));
+    }
+
+    @Test
+    public void postRequestNewUserIntoDatabaseWithInValidStatusRespondsBadRequest() throws Exception {
+        adam.setStatus(UserStatus.DEFAULT);
+        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isBadRequest()).andExpect(content().string("Invalid user data."));
+    }
+
+    @Test
+    public void postRequestNewUserIntoDatabaseWithMissingIdRespondsOk() throws Exception {
+        adam.setId(null);
+        mockMvc.perform(post("/user").content(adam.toJSonString())).andExpect(status().isOk());
+    }
+
     // todo check for missing parameters (it should be handled by a different method that turns a json into a user)
     // todo check for validity of password (it should be a hash)
 
