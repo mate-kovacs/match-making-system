@@ -5,6 +5,7 @@ import com.codecool.matchmakingservice.userservice.model.User;
 import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.JsonPath;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,7 +38,7 @@ public class UserService {
     }
 
     private String checkEmail(String email) {
-        if (email.equals("null")) {
+        if (!EmailValidator.getInstance().isValid(email)) {
             throw new InvalidJsonException();
         }
         return email;
