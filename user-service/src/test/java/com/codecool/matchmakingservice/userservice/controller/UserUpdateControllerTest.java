@@ -133,7 +133,16 @@ public class UserUpdateControllerTest {
 
     @Test
     public void deleteRequestForUserThatIsNotInDatabaseResponseIsNotFound() throws Exception {
+        Optional<User> result = Optional.empty();
+        Mockito.when(repository.findById(999L)).thenReturn(result);
         mockMvc.perform(delete("/user/999")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteRequestForUserThatIsInDatabaseResponseIsOk() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+        mockMvc.perform(delete("/user/1")).andExpect(status().isOk());
     }
 
     // todo put request for user/id (to update a given user's certain property)

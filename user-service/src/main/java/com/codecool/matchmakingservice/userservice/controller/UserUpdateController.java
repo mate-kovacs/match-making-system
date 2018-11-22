@@ -48,6 +48,11 @@ public class UserUpdateController {
         } catch (NumberFormatException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (repository.findById(userId).isPresent()) {
+            repository.deleteById(userId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
