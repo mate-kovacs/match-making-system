@@ -58,4 +58,12 @@ public class UserServiceTest {
         adam.setId(null);
         assertTrue(service.getUserFromJson(adam.toJSonString()).getEmail().equals(adam.getEmail()));
     }
+
+    @Test
+    public void getUserFromJsonWithMissingNameThrowsException() {
+        adam.setName(null);
+        exceptionRule.expect(InvalidUserDataException.class);
+        exceptionRule.expectMessage("Invalid user data.");
+        service.getUserFromJson(adam.toJSonString());
+    }
 }
