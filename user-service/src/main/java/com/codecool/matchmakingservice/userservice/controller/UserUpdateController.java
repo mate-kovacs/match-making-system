@@ -55,7 +55,8 @@ public class UserUpdateController {
 
     @PutMapping(path = "user/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable("id") String id,
-                                           @RequestBody String userJson) {
+                                           @RequestBody String userJson,
+                                           @RequestParam("userparam") String userProperty) {
         Long userId;
         try {
             userId = Long.parseLong(id);

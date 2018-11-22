@@ -12,8 +12,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Optional;
 
@@ -147,21 +149,29 @@ public class UserUpdateControllerTest {
 
     @Test
     public void putRequestForInvalidIdRespondsBadRequest() throws Exception {
-        mockMvc.perform(put("/user/test").content("{}")).andExpect(status().isBadRequest());
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "name");
+        mockMvc.perform(put("/user/test").content("{}").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
     public void putRequestForUserThatIsNotInDatabaseRespondsNotFound() throws Exception {
         Optional<User> result = Optional.empty();
         Mockito.when(repository.findById(999L)).thenReturn(result);
-        mockMvc.perform(put("/user/999").content("{}")).andExpect(status().isNotFound());
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "name");
+        mockMvc.perform(put("/user/999").content("{}").params(params)).andExpect(status().isNotFound());
     }
 
     @Test
     public void putRequestForValidUserWithEmptyBodyRespondsBadRequest() throws Exception {
         Optional<User> result = Optional.of(adam);
         Mockito.when(repository.findById(1L)).thenReturn(result);
-        mockMvc.perform(put("/user/1").content("")).andExpect(status().isBadRequest());
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "name");
+        mockMvc.perform(put("/user/1").content("").params(params)).andExpect(status().isBadRequest());
     }
 
     // todo put request for user/id (to update a given user's certain property)
