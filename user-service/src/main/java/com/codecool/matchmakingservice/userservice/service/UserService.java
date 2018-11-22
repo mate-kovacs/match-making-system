@@ -43,21 +43,21 @@ public class UserService {
         }
     }
 
-    private String checkPassword(String password) {
+    public String checkPassword(String password) {
         if (password.equals("null")) {
             throw new InvalidJsonException();
         }
         return password;
     }
 
-    private String checkEmail(String email) {
+    public String checkEmail(String email) {
         if (!EmailValidator.getInstance().isValid(email)) {
             throw new InvalidJsonException();
         }
         return email;
     }
 
-    private String checkName(String name) {
+    public String checkName(String name) {
         if (name.equals("null")) {
             throw new InvalidJsonException();
         }
