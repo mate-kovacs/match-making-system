@@ -184,6 +184,16 @@ public class UserUpdateControllerTest {
         mockMvc.perform(put("/user/1").content("{}").params(params)).andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void putRequestForValidUserWithInvalidPropertyRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "invalid");
+        mockMvc.perform(put("/user/1").content("{}").params(params)).andExpect(status().isBadRequest());
+    }
+
     // todo put request for user/id (to update a given user's certain property)
     
 }
