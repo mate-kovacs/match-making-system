@@ -2,8 +2,11 @@ package com.codecool.matchmakingservice.userservice.controller;
 
 import com.codecool.matchmakingservice.userservice.model.InvalidUserDataException;
 import com.codecool.matchmakingservice.userservice.model.User;
+import com.codecool.matchmakingservice.userservice.model.UserStatus;
 import com.codecool.matchmakingservice.userservice.repository.UserRepository;
 import com.codecool.matchmakingservice.userservice.service.UserService;
+import com.jayway.jsonpath.InvalidJsonException;
+import com.jayway.jsonpath.JsonPathException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,12 +64,6 @@ public class UserUpdateController {
                                            @RequestBody String userJson,
                                            @RequestParam("userparam") String userProperty) {
         Long userId;
-        List<String> validUserProperties = new ArrayList<>();
-        validUserProperties.add("name");
-        validUserProperties.add("password");
-        validUserProperties.add("email");
-        validUserProperties.add("elo");
-        validUserProperties.add("status");
         try {
             userId = Long.parseLong(id);
         } catch (NumberFormatException ex) {
@@ -75,7 +72,44 @@ public class UserUpdateController {
         if (!repository.findById(userId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if (! validUserProperties.contains(userProperty)) {
+        return updateUserProperty(userJson, userProperty, userId);
+    }
+
+    private ResponseEntity<Void> updateUserProperty(@RequestBody String userJson, @RequestParam("userparam") String userProperty, Long userId) {
+        User user = repository.findById(userId).get();
+        try {
+            switch (userProperty) {
+                case "name":
+                    user.setName(JsonPath.parse(userJson).read("$.name"));
+                    break;
+                case "password":
+                    user.setPassword(JsonPath.parse(userJson).read("$.password"));
+                    break;
+                case "email":
+                    user.setEmail(JsonPath.parse(userJson).read("$.email"));
+                    break;
+                case "elo":
+                    user.setElo(JsonPath.parse(userJson).read("$.elo"));
+                    break;
+                case "status":
+                    String statusString = JsonPath.parse(userJson).read("$.status");
+                    UserStatus status = UserStatus.DEFAULT;
+                    for (UserStatus current : UserStatus.values()) {
+                        if (current.name().equals(statusString)) {
+                            status = current;
+                            break;
+                        }
+                    }
+                    if (status == UserStatus.DEFAULT) {
+                        throw new InvalidJsonException();
+                    } else {
+                        user.setStatus(status);
+                    }
+                    break;
+                default:
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } catch (JsonPathException ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);

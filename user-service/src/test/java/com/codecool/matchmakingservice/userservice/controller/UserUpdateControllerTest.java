@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.MultiValueMap;
@@ -151,7 +152,7 @@ public class UserUpdateControllerTest {
     public void putRequestForInvalidIdRespondsBadRequest() throws Exception {
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("userparam", "name");
-        mockMvc.perform(put("/user/test").content("{}").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(put("/user/test").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -161,7 +162,7 @@ public class UserUpdateControllerTest {
 
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("userparam", "name");
-        mockMvc.perform(put("/user/999").content("{}").params(params)).andExpect(status().isNotFound());
+        mockMvc.perform(put("/user/999").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -171,7 +172,7 @@ public class UserUpdateControllerTest {
 
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("userparam", "name");
-        mockMvc.perform(put("/user/1").content("").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -181,7 +182,7 @@ public class UserUpdateControllerTest {
 
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("userparam", "id");
-        mockMvc.perform(put("/user/1").content("{}").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -191,7 +192,27 @@ public class UserUpdateControllerTest {
 
         MultiValueMap<String, String> params = new HttpHeaders();
         params.set("userparam", "invalid");
-        mockMvc.perform(put("/user/1").content("{}").params(params)).andExpect(status().isBadRequest());
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithNameButNameIsMissingFromBodyRespondsBadRequest() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "name");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{}").params(params)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void putRequestForValidUserWithNameRespondsOk() throws Exception {
+        Optional<User> result = Optional.of(adam);
+        Mockito.when(repository.findById(1L)).thenReturn(result);
+
+        MultiValueMap<String, String> params = new HttpHeaders();
+        params.set("userparam", "name");
+        mockMvc.perform(put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content("{name: 'Adam'}").params(params)).andExpect(status().isOk());
     }
 
     // todo put request for user/id (to update a given user's certain property)
