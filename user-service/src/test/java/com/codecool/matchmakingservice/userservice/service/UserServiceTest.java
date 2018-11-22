@@ -52,4 +52,10 @@ public class UserServiceTest {
     public void getUserFromJsonForValidParameterReturnsUser() {
         assertTrue(service.getUserFromJson(adam.toJSonString()).equals(adam));
     }
+
+    @Test
+    public void getUserFromJsonWithMissingIdReturnsUser() {
+        adam.setId(null);
+        assertTrue(service.getUserFromJson(adam.toJSonString()).getEmail().equals(adam.getEmail()));
+    }
 }

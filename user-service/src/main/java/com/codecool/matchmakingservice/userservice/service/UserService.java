@@ -13,7 +13,11 @@ public class UserService {
     public User getUserFromJson(String userJson) throws RuntimeException {
         try {
             User user = new User();
-            user.setId(Long.parseLong((JsonPath.parse(userJson).read("$.id")).toString()));
+            try {
+                user.setId(Long.parseLong((JsonPath.parse(userJson).read("$.id")).toString()));
+            } catch (NullPointerException ex) {
+                user.setId(null);
+            }
             user.setEmail(JsonPath.parse(userJson).read("$.email"));
             user.setPassword(JsonPath.parse(userJson).read("$.password"));
             user.setName(JsonPath.parse(userJson).read("$.name"));
