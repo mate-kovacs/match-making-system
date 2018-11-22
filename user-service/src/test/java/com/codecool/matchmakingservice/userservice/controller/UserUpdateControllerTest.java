@@ -145,6 +145,11 @@ public class UserUpdateControllerTest {
         mockMvc.perform(delete("/user/1")).andExpect(status().isOk());
     }
 
+    @Test
+    public void putRequestForInvalidIdRespondsBadRequest() throws Exception {
+        mockMvc.perform(put("/user/test")).andExpect(status().isBadRequest());
+    }
+
     // todo put request for user/id (to update a given user's certain property)
     
 }
