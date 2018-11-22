@@ -150,6 +150,13 @@ public class UserUpdateControllerTest {
         mockMvc.perform(put("/user/test")).andExpect(status().isBadRequest());
     }
 
+    @Test
+    public void putRequestForUserThatIsNotInDatabaseRespondsNotFound() throws Exception {
+        Optional<User> result = Optional.empty();
+        Mockito.when(repository.findById(999L)).thenReturn(result);
+        mockMvc.perform(put("/user/999")).andExpect(status().isNotFound());
+    }
+
     // todo put request for user/id (to update a given user's certain property)
     
 }
