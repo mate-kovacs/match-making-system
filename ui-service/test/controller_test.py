@@ -2,11 +2,16 @@ import unittest
 
 import ui_service
 
+
 class ControllerTest(unittest.TestCase):
 
     def setUp(self):
         self.app = ui_service.app.test_client()
-        pass
 
-    def test_basic(self):
+    def test_sanity_check(self):
         self.assertIsNotNone(self.app)
+
+    def test_login_route_responds_ok(self):
+        response = self.app.get('/login', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
