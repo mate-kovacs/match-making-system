@@ -24,3 +24,6 @@ class ControllerTest(unittest.TestCase):
         response = self.app.get('/', follow_redirects=False)
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
+    def test_register_route_responds_ok(self):
+        response = self.app.get('/register', follow_redirects=True)
+        self.assertEqual(response.status_code, HTTPStatus.OK)

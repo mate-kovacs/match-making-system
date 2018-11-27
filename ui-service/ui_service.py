@@ -12,6 +12,10 @@ def hello_world():
 def login_route():
     return ''
 
+@app.route('/register')
+def register_route():
+    return ''
+
 
 if __name__ == '__main__':
     app.run()
