@@ -9,25 +9,38 @@ app.config['SECRET_KEY'] = "I dont know what to put in here."
 Bootstrap(app)
 
 class LoginForm(FlaskForm):
-    email = StringField("email", validators=[InputRequired, Length(max=50)])
-    password = PasswordField("password", validators=[InputRequired, Length(min=6 , max=80)])
+    email = StringField("email", validators=[InputRequired(), Email(message="Invalid email"), Length(max=50)])
+    password = PasswordField("password", validators=[InputRequired(), Length(min=6 , max=80)])
     remember = BooleanField("remember me")
+
+class RegisterForm(FlaskForm):
+    email = StringField("email", validators=[InputRequired(), Email(message="Invalid email"), Length(max=50)])
+    username = StringField("username", validators=[InputRequired(), Length(max=24)])
+    password = PasswordField("password", validators=[InputRequired(), Length(min=6 , max=80)])
 
 @app.route('/')
 def hello_world():
     return redirect(url_for('login'))
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+
+    if form.validate_on_submit():
+        return "<h1>" + form.email.data + " " + form.password.data + "</h1>"
 
     return render_template('login.html', form = form)
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template('register.html')
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        return "<h1>" + form.email.data + " " + form.username.data + " " + form.password.data + "</h1>"
+
+    return render_template('register.html', form = form)
 
 
 @app.route('/lobby')
