@@ -7,10 +7,12 @@ from wtforms.validators import InputRequired, Email, Length
 from http import HTTPStatus
 import requests
 import json
+import bcrypt
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "I dont know what to put in here."
 Bootstrap(app)
+salt = bcrypt.gensalt()
 
 
 class User():
@@ -50,13 +52,12 @@ def login():
         params = {'email': form.email.data}
         response = requests.get(url, params=params)
         data = response.json()
-        if data[0]['password'] == form.password.data:
+        if bcrypt.checkpw(form.password.data.encode('utf8'), data[0]['password'].encode('utf8')):
             return "Success"
 
-        # todo use hashing when comparing passwords
         # todo if yes then set the users status to online and let them log in
         # todo otherwise return with an error message
-        return "<h1>" + form.email.data + " " + form.password.data + "</h1>"
+        return "<h1>" + "Invalid email or password." + "</h1>"
 
 
     return render_template('login.html', form=form)
@@ -69,8 +70,9 @@ def register():
     if form.validate_on_submit():
         new_id = None
         starting_elo = 100
-        status = "ONLINE" # online
-        user = User(new_id, form.username.data, form.password.data, form.email.data, status, starting_elo)
+        status = "ONLINE"
+        hashed_password = bcrypt.hashpw(form.password.data.encode('utf8'), salt).decode('utf8')
+        user = User(new_id, form.username.data, hashed_password, form.email.data, status, starting_elo)
 
         url = "http://localhost:8080/user"
         data = json.dumps(user.__dict__)
@@ -80,7 +82,7 @@ def register():
             return redirect(url_for('lobby'))
         # todo in case of possible problem - like email duplication - return the error message
         message = response.text
-        return "<h1>" + message + " "+ form.email.data + " " + form.username.data + " " + form.password.data + "</h1>"
+        return "<h1>" + message + "</h1>"
 
     return render_template('register.html', form=form)
 
