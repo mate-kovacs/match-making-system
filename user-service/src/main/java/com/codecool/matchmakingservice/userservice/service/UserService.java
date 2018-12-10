@@ -17,7 +17,7 @@ public class UserService {
             User user = new User();
             try {
                 user.setId(Long.parseLong((JsonPath.parse(userJson).read("$.id")).toString()));
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException | NumberFormatException ex) {
                 user.setId(null);
             }
             user.setEmail(checkEmail(JsonPath.parse(userJson).read("$.email")));
