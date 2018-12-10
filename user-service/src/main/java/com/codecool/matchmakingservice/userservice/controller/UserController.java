@@ -40,7 +40,7 @@ public class UserController {
         } else if (! (status == null)) {
             return handleRequestByStatus(status);
         } else {
-            List<User> userList = new ArrayList<>();
+            List<User> userList = repository.findAll();
             return new ResponseEntity<>(userList, HttpStatus.OK);
         }
     }
