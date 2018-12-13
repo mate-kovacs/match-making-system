@@ -64,7 +64,7 @@ public class UserService {
         return name;
     }
 
-    public boolean updateUserProperty(String userJson, String userProperty, Long userId, User user) {
+    public boolean updateUserProperty(String userJson, String userProperty, User user) {
         try {
             switch (userProperty) {
                 case "name":
