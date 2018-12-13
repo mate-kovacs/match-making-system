@@ -70,7 +70,7 @@ public class UserUpdateControllerTest {
         cindy.setElo(150);
         //todo mock the getUserFromJson method correctly for the unit tests instead of using it
         Mockito.when(service.getUserFromJson(Mockito.anyString())).thenCallRealMethod();
-        Mockito.when(service.updateUserProperty(Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(), Mockito.any())).thenCallRealMethod();
+        Mockito.when(service.updateUserProperty(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenCallRealMethod();
     }
 
     @Test
