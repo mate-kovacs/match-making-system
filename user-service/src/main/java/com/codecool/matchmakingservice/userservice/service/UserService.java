@@ -17,7 +17,7 @@ public class UserService {
             User user = new User();
             try {
                 user.setId(Long.parseLong((JsonPath.parse(userJson).read("$.id")).toString()));
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException | NumberFormatException ex) {
                 user.setId(null);
             }
             user.setEmail(checkEmail(JsonPath.parse(userJson).read("$.email")));
@@ -64,7 +64,7 @@ public class UserService {
         return name;
     }
 
-    public boolean updateUserProperty(String userJson, String userProperty, Long userId, User user) {
+    public boolean updateUserProperty(String userJson, String userProperty, User user) {
         try {
             switch (userProperty) {
                 case "name":

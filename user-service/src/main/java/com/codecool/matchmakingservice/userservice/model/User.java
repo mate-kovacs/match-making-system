@@ -8,18 +8,24 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @GeneratedValue
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "status")
     @Enumerated
     private UserStatus status;
 
+    @Column(name = "elo")
     private int elo;
 
     public User() {

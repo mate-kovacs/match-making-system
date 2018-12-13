@@ -65,7 +65,7 @@ public class UserUpdateController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         User user = repository.findById(userId).get();
-        if (service.updateUserProperty(userJson, userProperty, userId, user)) {
+        if (service.updateUserProperty(userJson, userProperty, user)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

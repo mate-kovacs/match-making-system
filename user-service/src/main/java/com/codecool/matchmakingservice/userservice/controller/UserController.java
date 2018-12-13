@@ -36,11 +36,11 @@ public class UserController {
         } else if (!(minElo == null && maxElo == null)) {
             return handleRequestByElo(minElo, maxElo);
         } else if (! (name == null)) {
-            return handleRequestByName(name);
+            return handleRequestByName(name.toLowerCase());
         } else if (! (status == null)) {
             return handleRequestByStatus(status);
         } else {
-            List<User> userList = new ArrayList<>();
+            List<User> userList = repository.findAll();
             return new ResponseEntity<>(userList, HttpStatus.OK);
         }
     }
@@ -97,7 +97,7 @@ public class UserController {
     }
 
     private ResponseEntity<List<User>> handleRequestByName(String name) {
-        List<User> users = repository.findAllByNameContainingOrderByIdAscNameAsc(name);
+        List<User> users = repository.findAllByNameContainingIgnoreCaseOrderByIdAscNameAsc(name);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
